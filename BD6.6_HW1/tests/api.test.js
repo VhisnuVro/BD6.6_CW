@@ -1,38 +1,13 @@
 const request = require("supertest");
 let http = require("http");
 const { app } = require("../index");
-const { getAllMovies, getMovieById } = require("../controllers");
+const { getAllMovies } = require("../controllers");
 let server;
 
 jest.mock("../controllers", () => ({
     ...jest.requireActual("../controllers"),
     getAllMovies: jest.fn(),
-    getMovieById: jest.fn(),
 }));
-
-let mockMovieData = [
-    {
-        movieId: 1,
-        title: "Inception",
-        director: "Christopher Nolan",
-        releaseYear: 2010,
-        genre: "Sci-Fi",
-    },
-    {
-        movieId: 2,
-        title: "The Dark Knight",
-        director: "Christopher Nolan",
-        releaseYear: 2008,
-        genre: "Action",
-    },
-    {
-        movieId: 3,
-        title: "Interstellar",
-        director: "Christopher Nolan",
-        releaseYear: 2014,
-        genre: "Sci-Fi",
-    },
-];
 
 beforeAll(async () => {
     server = http.createServer(app);
@@ -42,8 +17,27 @@ beforeAll(async () => {
 afterAll(async () => {
     await new Promise((resolve) => server.close(resolve));
 });
-
-describe("Controller Function Tests", () => {
+let mockMovieData = [
+    {
+        movieId: 1,
+        title: "Inception",
+        genre: "Sci-Fi",
+        director: "Christopher Nolan",
+    },
+    {
+        movieId: 2,
+        title: "The Shawshank Redemption",
+        genre: "Drama",
+        director: "Frank Darabont",
+    },
+    {
+        movieId: 3,
+        title: "The Godfather",
+        genre: "Crime",
+        director: "Francis Ford Coppola",
+    },
+];
+describe("Controller Fun Tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -57,8 +51,7 @@ describe("Controller Function Tests", () => {
 });
 
 describe("API Endpoint Tests", () => {
-    it("Should return all the movies on GET /movies", async () => {
-        getAllMovies.mockReturnValue(mockMovieData);
+    it("Should return all the movies in get Call", async () => {
         const res = await request(server).get("/movies");
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
@@ -66,46 +59,35 @@ describe("API Endpoint Tests", () => {
                 {
                     movieId: 1,
                     title: "Inception",
-                    director: "Christopher Nolan",
-                    releaseYear: 2010,
                     genre: "Sci-Fi",
+                    director: "Christopher Nolan",
                 },
                 {
                     movieId: 2,
-                    title: "The Dark Knight",
-                    director: "Christopher Nolan",
-                    releaseYear: 2008,
-                    genre: "Action",
+                    title: "The Shawshank Redemption",
+                    genre: "Drama",
+                    director: "Frank Darabont",
                 },
                 {
                     movieId: 3,
-                    title: "Interstellar",
-                    director: "Christopher Nolan",
-                    releaseYear: 2014,
-                    genre: "Sci-Fi",
+                    title: "The Godfather",
+                    genre: "Crime",
+                    director: "Francis Ford Coppola",
                 },
             ],
         });
         expect(res.body.movies.length).toBe(3);
     });
 
-    it("Should return a movie by ID on GET /movies/details/:id", async () => {
-        getMovieById.mockReturnValue({
-            movieId: 1,
-            title: "Inception",
-            director: "Christopher Nolan",
-            releaseYear: 2010,
-            genre: "Sci-Fi",
-        });
+    it("Get /movies/details/:id should get movies by Id", async () => {
         const res = await request(server).get("/movies/details/1");
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
-            employee: {
+            movie: {
                 movieId: 1,
                 title: "Inception",
-                director: "Christopher Nolan",
-                releaseYear: 2010,
                 genre: "Sci-Fi",
+                director: "Christopher Nolan",
             },
         });
     });

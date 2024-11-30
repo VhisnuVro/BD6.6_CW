@@ -11,8 +11,8 @@ app.get("/movies", async (req, res) => {
 });
 
 app.get("/movies/details/:id", async (req, res) => {
-  const employee = getMovieById(req.params.id);
-  res.json({ employee });
+  const movie = getMovieById(req.params.id);
+  res.json({ movie });
 });
 
 module.exports = { app };
